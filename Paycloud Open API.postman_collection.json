@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "95cb2454-c91c-4ddb-959f-3eb5f4749065",
+		"name": "Paycloud Open API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Order Query",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Obtain the current timestamp and set it to a variable\r",
+							"var time = Math.round(new Date().getTime());\r",
+							"pm.variables.set('timestamp', time);\r",
+							"\r",
+							"// Obtain JSON key from HTTP body\r",
+							"var param = JSON.parse(request.data);\r",
+							"var keys = [];\r",
+							"for (let k in param) {\r",
+							"    if (k == 'sign' || k == 'timestamp') {\r",
+							"        continue;\r",
+							"    }\r",
+							"    keys.push(k);\r",
+							"}\r",
+							"keys.push('timestamp');\r",
+							"\r",
+							"// Parameter ASCII sorting\r",
+							"keys.sort();\r",
+							"\r",
+							"// Value based on parameter name\r",
+							"var kv = [];\r",
+							"for (let k of keys) {\r",
+							"    if(param[k] == ''){\r",
+							"        continue;\r",
+							"    }\r",
+							"    if(k == 'timestamp'){\r",
+							"        kv.push(k + '=' + time);\r",
+							"    }else{\r",
+							"        kv.push(k + '=' + param[k]);\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Put together signature strings\r",
+							"var signStr = kv.join('&');\r",
+							"console.log(\"String to be signed is:  \" + signStr);\r",
+							"\r",
+							"// Loading ForgeJS\r",
+							"eval(pm.globals.get('FORGE_JS'));\r",
+							"\r",
+							"// Calculate signature\r",
+							"const privKeyStr = \"-----BEGIN RSA PRIVATE KEY-----\\n\" + pm.globals.get('APP_RSA_PRIVATE_KEY') + \"\\n-----END RSA PRIVATE KEY-----\";\r",
+							"var prk = forge.pki.privateKeyFromPem(privKeyStr);\r",
+							"const md = forge.md.sha256.create();\r",
+							"md.update(signStr, \"utf8\");\r",
+							"var signByte = prk.sign(md);\r",
+							"var sign = forge.util.encode64(signByte);\r",
+							"\r",
+							"// Place signature in environment variable\r",
+							"pm.variables.set('sign', sign);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"merchant_no\":\"312100000164\",\r\n    \"charset\":\"UTF-8\",\r\n    \"method\":\"order.query\",\r\n    \"format\":\"JSON\",\r\n    \"sign\":\"{{sign}}\",\r\n    \"app_id\":\"wz715fc0d10ee9d156\",\r\n    \"sign_type\":\"RSA2\",\r\n    \"version\":\"1.0\",\r\n    \"merchant_order_no\":\"TEST_1685946062143\",\r\n    \"timestamp\":\"{{timestamp}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gw.paycloud.world/api/entry",
+					"protocol": "https",
+					"host": [
+						"gw",
+						"paycloud",
+						"world"
+					],
+					"path": [
+						"api",
+						"entry"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,21 @@
+{
+	"id": "146e52f0-fd32-4814-8e58-8a3c0f4d5eb7",
+	"values": [
+		{
+			"key": "APP_RSA_PRIVATE_KEY",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "FORGE_JS",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"name": "My Workspace Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2023-06-05T06:39:48.996Z",
+	"_postman_exported_using": "Postman/10.14.2"
+}
