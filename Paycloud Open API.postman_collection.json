@@ -33,7 +33,7 @@
 							"// Value based on parameter name\r",
 							"var kv = [];\r",
 							"for (let k of keys) {\r",
-							"    if(param[k] == ''){\r",
+							"    if(param[k] === ''){\r",
 							"        continue;\r",
 							"    }\r",
 							"    if(k == 'timestamp'){\r",
